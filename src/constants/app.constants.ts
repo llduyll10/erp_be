@@ -1,3 +1,9 @@
+export enum NODE_ENV {
+  DEVELOPMENT = 'development',
+  TEST = 'test',
+  PRODUCTION = 'production',
+}
+
 export const APP_CONSTANTS = {
   DEFAULT_PORT: 3000,
   DEFAULT_PAGE_SIZE: 10,
@@ -29,6 +35,73 @@ export const ERROR_MESSAGES = {
   NOT_FOUND: 'Resource not found',
   VALIDATION_ERROR: 'Validation failed',
   INTERNAL_SERVER_ERROR: 'Internal server error',
-}; 
+};
 
 export const MAX_LENGTH_INPUT = 255;
+export const DEFAULT_PAGE_NUMBER = 1;
+export const DEFAULT_PAGE_SIZE = 20;
+
+
+
+
+export enum OAUTH_GRANT_TYPE {
+  PASSWORD = 'password',
+  REFRESH_TOKEN = 'refresh_token',
+}
+
+export enum AUTH_STRATEGY {
+  TOKEN = 'token',
+  REFRESH_TOKEN = 'refresh_token',
+}
+
+
+export enum DEFAULT_ACTIONS {
+  FILTER = 'filter',
+  SHOW = 'show',
+  CREATE = 'create',
+  UPDATE = 'update',
+  DELETE = 'delete',
+}
+
+export const COOKIES_KEYS = {
+  ACCESS_TOKEN: 'access_token',
+  REFRESH_TOKEN: 'refresh_token',
+};
+
+export const DIGIT_ONLY_REGEX = /^\d+$/;
+export const DIGIT_WITH_HYPHEN_REGEX = /^[\d-]+$/;
+export const DIGIT_OR_EMPTY_STRING_REGEX = /^(?:[0-9]*)$/;
+export const DIGIT_WITH_HYPHEN_OR_EMPTY_STRING_REGEX = /^[\d-]*$/;
+export const REGEX_POSTAL_CODE_NUMBER_ONLY = /^\d{7}$/;
+export const POSTAL_CODE_REGEX = /^[0-9-]{7,8}$/;
+export const REGEX_POSTAL_CODE_OR_EMPTY = /^$|^[\d-]{7,8}$/;
+
+export const PROJECT_QUEUE = 'PROJECT_QUEUE';
+export const NOTIFICATION_QUEUE = 'notification';
+
+export const GLOBAL_TAX_RATE = 10; // Default 10%
+
+export const SEARCH_NEAREST_SUPPLIER_RADIUS = 50; // in kilometers
+
+export const ERROR_CODES = {
+  VALIDATION: 'E0001',
+  INVALID_TOKEN: 'E0002',
+  INVALID_CREDENTIALS: 'E0003',
+  INVALID_ACCOUNT: 'E0004',
+  FORBIDDEN: 'E0005',
+  INTERNAL_SERVER_ERROR: 'E0006',
+  NOT_FOUND: 'E0007',
+};
+
+export const MAX_LENGTH_TEXT_AREA = 9999;
+
+export const CUSTOM_MODEL_NUMBERS = {
+  CUSTOM_PRODUCT: 'CUS_PRO_MO_NUM',
+  CUSTOM_CONSTRUCTION: 'CUS_CON_MO_NUM',
+};
+
+export enum ChangeTypeEnum {
+  CREATE = 'create',
+  UPDATE = 'update',
+  DELETE = 'delete',
+}

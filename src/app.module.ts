@@ -2,12 +2,11 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerModule, ThrottlerModuleOptions } from '@nestjs/throttler';
-import { LoggerModule } from 'nestjs-pino';
+// import { LoggerModule } from 'nestjs-pino';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { APP_GUARD, APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { CacheModule } from '@nestjs/cache-manager';
 
-import { SharedModule } from './shared/shared.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 
@@ -21,12 +20,21 @@ import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import appConfig from './config/app.config';
 import authConfig from './config/auth.config';
 import databaseConfig from './config/database.config';
+import storageConfig from './config/storage.config';
+import emailConfig from './config/email.config';
+import { ShareModule } from '@/shared/share.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [appConfig, authConfig, databaseConfig],
+      load: [
+        appConfig,
+        authConfig,
+        databaseConfig,
+        storageConfig,
+        emailConfig,
+      ],
     }),
     TypeOrmModule.forRootAsync({
       useFactory: (configService: ConfigService) => ({
@@ -46,9 +54,18 @@ import databaseConfig from './config/database.config';
         ],
       }),
     }),
-    LoggerModule.forRoot(),
+    // LoggerModule.forRoot({
+    //   pinoHttp: {
+    //     transport: process.env.NODE_ENV !== 'production'
+    //       ? { target: 'pino-pretty' }
+    //       : undefined,
+    //     level: process.env.NODE_ENV !== 'production'
+    //       ? 'fatal' // Chỉ hiển thị fatal (60), bỏ qua error (50)
+    //       : 'warn',
+    //   },
+    // }),
     EventEmitterModule.forRoot(),
-    SharedModule,
+    ShareModule,
     AuthModule,
     UsersModule,
     CacheModule.registerAsync({
@@ -88,4 +105,4 @@ import databaseConfig from './config/database.config';
     },
   ],
 })
-export class AppModule {} 
+export class AppModule { } 

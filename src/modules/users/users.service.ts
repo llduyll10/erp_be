@@ -4,9 +4,10 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
-import { BaseService } from '../../base/services/base.service';
-import { EncryptionService } from '../../base/services/encryption.service';
-import { ApiError } from '../../utils/errors/api-error.util';
+import { BaseService } from '@/base/services/base.service';
+import { EncryptionService } from '@/base/services/encryption.service';
+import { ApiError } from '@/utils/errors/api-error.util';
+import { EmailService } from '@/shared/email/email.service';
 
 @Injectable()
 export class UsersService extends BaseService<User> {
@@ -14,6 +15,7 @@ export class UsersService extends BaseService<User> {
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
     private readonly encryptionService: EncryptionService,
+    private readonly emailService: EmailService,
   ) {
     super(usersRepository);
   }
@@ -53,8 +55,8 @@ export class UsersService extends BaseService<User> {
 
   async setRefreshToken(userId: string, refreshToken: string | null): Promise<void> {
     await this.usersRepository.update(userId, {
-      refreshToken: refreshToken 
-        ? await this.encryptionService.hash(refreshToken) 
+      refreshToken: refreshToken
+        ? await this.encryptionService.hash(refreshToken)
         : undefined,
     });
   }
@@ -63,5 +65,10 @@ export class UsersService extends BaseService<User> {
     await this.usersRepository.update(userId, {
       lastLoginAt: new Date(),
     });
+  }
+
+  async register(user: any): Promise<void> {
+    // User registration logic...
+
   }
 } 

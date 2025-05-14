@@ -11,7 +11,5 @@ export default registerAs('database', (): TypeOrmModuleOptions => ({
   database: process.env.DB_DATABASE || 'nestjs',
   entities: [join(__dirname, '../**/*.entity{.ts,.js}')],
   migrations: [join(__dirname, '../database/migrations/*{.ts,.js}')],
-  synchronize: process.env.NODE_ENV !== 'production',
-  logging: process.env.NODE_ENV === 'development',
   ssl: process.env.DB_SSL === 'true',
 })); 
