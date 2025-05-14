@@ -11,7 +11,7 @@ import {
 import { UploadService } from './upload.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '@/decorators/current-user.decorator';
-import { User } from '@/entities/user.entity';
+import { User } from '@/entities/users.entity';
 import { ApiUpload } from '@/decorators/api-upload.decorator';
 import { UploadFileRequestDTO } from './upload-file.dto';
 import { StorageFile } from '@/entities/storage_files';

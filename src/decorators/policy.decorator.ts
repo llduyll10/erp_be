@@ -1,6 +1,6 @@
 import { applyDecorators, SetMetadata } from '@nestjs/common';
 import { EntityClassOrSchema } from '@nestjs/typeorm/dist/interfaces/entity-class-or-schema.type';
-import { User } from '@/entities/user.entity';
+import { User } from '@/entities/users.entity';
 
 export interface IPolicy {
   authorize: (action: string, resource?: unknown) => boolean;
