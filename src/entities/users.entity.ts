@@ -1,9 +1,4 @@
-import {
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-} from 'typeorm';
+import { Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 import {
   Column,
   CreateDateColumn,
@@ -11,11 +6,11 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { MAX_LENGTH_INPUT } from '@/constants/app.constants';
-import { UserRoleEnum } from '@/entities/enums/user.enum'
+import { UserRoleEnum } from '@/entities/enums/user.enum';
 import { Company } from './companies.entity';
 
 @Entity('users')
-@Index(['user_type', 'email'], { unique: true })
+@Index(['email'], { unique: true })
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -45,9 +40,11 @@ export class User {
   last_login_at: Date;
 
   //=========RELATIONS========
-  @ManyToOne(() => Company, (companies) => companies.users, { orphanedRowAction: 'delete' })
+  @ManyToOne(() => Company, (companies) => companies.users, {
+    orphanedRowAction: 'delete',
+  })
   @JoinColumn({ name: 'company_id' })
-  companies: Company
+  companies: Company;
 
   // =======DATES==============
   @CreateDateColumn()
@@ -58,5 +55,4 @@ export class User {
 
   @Column({ type: 'timestamp', nullable: true })
   deleted_at: Date;
-
 }

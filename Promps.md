@@ -1,12 +1,13 @@
 🔧 Prompt:
 
 Task: Implement the "Register New Company" feature of the Auth Module in a NestJS backend project.
+prefer @AuthModule.md and @AuthModuleCheckList.md
 
 Project Context:
 
 - The backend uses NestJS + TypeORM + PostgreSQL.
 - The feature is part of the AuthModule (refer to file: AuthModule.md).
-- After each sub-feature is implemented, the AI should update the progress checklist file: AuthModuleCheckList.md.
+- After each sub-feature is implemented, the AI should update the progress checklist file: @AuthModuleCheckList.md.
 
 Acceptance Criteria:
 
@@ -20,7 +21,6 @@ Acceptance Criteria:
 
 Technical Requirements:
 
-- Create entities: Company, User (if not yet created).
 - Create DTOs: RegisterCompanyDto.
 - Create the registration controller, service, and route.
 - Use Dependency Injection to manage services.

@@ -28,8 +28,6 @@ export class Company {
   @OneToMany(() => User, (user) => user.companies, { cascade: true })
   users: User[];
 
-
-
   // =======DATES==============
   @CreateDateColumn()
   created_at: Date;
