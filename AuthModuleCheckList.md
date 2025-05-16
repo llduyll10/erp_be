@@ -58,3 +58,33 @@ This checklist tracks progress for authentication-related features. After each t
 📝 Notes / Logs
 
 - You may append ✅ \[Task Name] – \[Done] \[timestamp] after each subtask here or programmatically update this file.
+
+# Auth Module Implementation Checklist
+
+## Core Features
+
+- ✅ Register New Company - done [2024-07-29]
+  - ✅ Implement company & admin user creation - done [2024-07-29]
+  - ✅ Validate inputs, unique constraints - done [2024-07-29]
+  - ✅ Return JWT token upon success - done [2024-07-29]
+  - ✅ Write E2E tests for registration flows - done [2024-07-29]
+- ⬜ User Login / Logout
+- ⬜ JWT Authentication
+- ⬜ Refresh Token (Optional)
+- ⬜ Role-Based Access Control (RBAC)
+
+## Entity Models
+
+- ✅ Company Entity
+- ✅ User Entity
+- ⬜ Access Token Entity (for refresh token functionality)
+
+## End-to-End Testing
+
+- ✅ Register company with valid data - done [2024-07-29]
+- ✅ Register with existing email - done [2024-07-29]
+- ✅ Register with missing fields - done [2024-07-29]
+- ⬜ User login with valid credentials
+- ⬜ User login with invalid credentials
+- ⬜ Access protected route with valid token
+- ⬜ Access protected route with invalid token

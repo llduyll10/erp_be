@@ -1,29 +1,38 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 
+export class PaginationMeta {
+  @ApiProperty()
+  page: number;
+
+  @ApiProperty()
+  limit: number;
+
+  @ApiProperty()
+  total: number;
+
+  @ApiProperty()
+  totalPages: number;
+}
+
 export class ResponseDTO<T> {
   @ApiProperty()
   @Expose()
   success: boolean;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @Expose()
   message?: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @Expose()
   data?: T;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @Expose()
-  meta?: {
-    page?: number;
-    limit?: number;
-    total?: number;
-    totalPages?: number;
-  };
+  meta?: PaginationMeta;
 
   constructor(partial: Partial<ResponseDTO<T>>) {
     Object.assign(this, partial);
   }
-} 
+}

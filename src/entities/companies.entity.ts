@@ -1,12 +1,19 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { User } from "./users.entity";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { User } from './users.entity';
 
 @Entity('companies')
 export class Company {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Column({ unique: true })
   name: string;
 
   @Column({ type: 'varchar', length: 255, nullable: false })
@@ -21,21 +28,20 @@ export class Company {
   @Column({ type: 'varchar', length: 255, nullable: true })
   logo_url: string;
 
-  @Column({ type: 'boolean', nullable: true, default: false })
-  is_active: boolean;
+  @Column({ default: true })
+  isActive: boolean;
 
   //=========RELATIONS========
-  @OneToMany(() => User, (user) => user.companies, { cascade: true })
+  @OneToMany(() => User, (user) => user.company)
   users: User[];
 
   // =======DATES==============
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 
   @Column({ type: 'timestamp', nullable: true })
   deleted_at: Date;
-
 }
