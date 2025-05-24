@@ -29,7 +29,7 @@ export class CompanyDto extends BaseDTO {
     description: 'Company tax ID',
     required: false,
   })
-  taxId?: string;
+  tax_id?: string;
 
   @Expose()
   @ApiProperty({
@@ -43,12 +43,12 @@ export class CompanyDto extends BaseDTO {
     description: 'Primary contact person name',
     required: false,
   })
-  contactName?: string;
+  contact_name?: string;
 
   @Expose()
   @ApiProperty({
     description: 'Primary contact email',
     required: false,
   })
-  contactEmail?: string;
+  contact_email?: string;
 }

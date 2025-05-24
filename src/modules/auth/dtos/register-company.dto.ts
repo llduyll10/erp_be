@@ -10,7 +10,7 @@ import { Type } from 'class-transformer';
 export class AdminUserDto {
   @IsString()
   @IsNotEmpty()
-  readonly fullName: string;
+  readonly full_name: string;
 
   @IsEmail()
   @IsNotEmpty()
@@ -25,7 +25,7 @@ export class AdminUserDto {
 export class RegisterCompanyDto {
   @IsString()
   @IsNotEmpty()
-  readonly companyName: string;
+  readonly company_name: string;
 
   @ValidateNested()
   @Type(() => AdminUserDto)

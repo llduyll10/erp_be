@@ -5,7 +5,7 @@ export class RegisterDto {
   @ApiProperty({ description: 'User full name' })
   @IsString()
   @IsNotEmpty()
-  readonly fullName: string;
+  readonly full_name: string;
 
   @ApiProperty({ description: 'User email address' })
   @IsEmail()
@@ -20,5 +20,5 @@ export class RegisterDto {
 
   @ApiProperty({ description: 'Company ID (if joining existing company)' })
   @IsString()
-  readonly companyId?: string;
+  readonly company_id?: string;
 }

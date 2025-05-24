@@ -6,8 +6,10 @@ import {
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { Company } from './companies.entity';
+import { AccessToken } from './access-token.entity';
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -21,7 +23,7 @@ export class User {
   id: string;
 
   @Column()
-  fullName: string;
+  full_name: string;
 
   @Column({ unique: true })
   email: string;
@@ -37,21 +39,30 @@ export class User {
   role: UserRole;
 
   @Column({ nullable: true })
-  refreshToken: string;
+  refresh_token: string;
 
   @Column({ nullable: true })
-  lastLoginAt: Date;
+  last_login_at: Date;
 
   @Column()
-  companyId: string;
+  company_id: string;
 
   @ManyToOne(() => Company, (company) => company.users)
-  @JoinColumn({ name: 'companyId' })
+  @JoinColumn({ name: 'company_id' })
   company: Company;
 
   @CreateDateColumn()
-  createdAt: Date;
+  created_at: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updated_at: Date;
+
+  @Column({ nullable: true })
+  password_reset_token: string;
+
+  @Column({ nullable: true })
+  password_reset_expires: Date;
+
+  @OneToMany(() => AccessToken, (token) => token.user)
+  access_tokens: AccessToken[];
 }

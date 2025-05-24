@@ -8,9 +8,9 @@ export class BaseDTO {
 
   @Expose()
   @ApiProperty()
-  createdAt: Date;
+  created_at: Date;
 
   @Expose()
   @ApiProperty()
-  updatedAt: Date;
-} 
+  updated_at: Date;
+}

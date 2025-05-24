@@ -21,6 +21,11 @@ import { UpdateUserDto } from './dtos/update-user.dto';
 import { RequestWithUser } from '@/common/interfaces/request.interface';
 import { ResponseTransformer } from '@/utils/transformers/response.transformer';
 import { ResponseDTO } from '@/base/dtos/response.dto';
+import { PoliciesGuard } from '@/common/guards/policy.guard';
+import { CheckPolicies } from '@/decorators/policy.decorator';
+import { Action } from '@/common/enums/action.enum';
+import { CurrentUser } from '@/decorators/current-user.decorator';
+import { User } from '@/entities/users.entity';
 
 @ApiTags('Users')
 @Controller('users')
@@ -34,7 +39,10 @@ export class UsersController {
    * @returns User profile data
    */
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PoliciesGuard)
+  @CheckPolicies((ability) => {
+    return ability.can(Action.Read, User);
+  })
   @ApiOperation({ summary: 'Get user by ID' })
   @ApiResponse({
     status: 200,
@@ -42,7 +50,10 @@ export class UsersController {
     description: 'Return the user profile.',
   })
   @ApiResponse({ status: 404, description: 'User not found.' })
-  async findOne(@Param('id') id: string): Promise<ResponseDTO<UserProfileDto>> {
+  async findOne(
+    @Param('id') id: string,
+    @CurrentUser() currentUser: User,
+  ): Promise<ResponseDTO<UserProfileDto>> {
     try {
       const user = await this.usersService.findOne(id);
       const profileData = this.usersService.mapToProfile(user);

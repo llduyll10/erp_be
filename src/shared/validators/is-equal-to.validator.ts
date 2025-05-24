@@ -1,18 +1,23 @@
 import {
   registerDecorator,
-  ValidationArguments,
   ValidationOptions,
+  ValidationArguments,
 } from 'class-validator';
 
-export function IsEqualTo<T>(
-  property: keyof T,
+/**
+ * Validates that a property equals another property
+ * @param property The property to compare with
+ * @param validationOptions Validation options
+ */
+export function IsEqualTo(
+  property: string,
   validationOptions?: ValidationOptions,
 ) {
-  return (object: any, propertyName: string) => {
+  return function (object: any, propertyName: string) {
     registerDecorator({
-      name: 'IsEqualTo',
+      name: 'isEqualTo',
       target: object.constructor,
-      propertyName,
+      propertyName: propertyName,
       constraints: [property],
       options: validationOptions,
       validator: {
@@ -21,10 +26,9 @@ export function IsEqualTo<T>(
           const relatedValue = (args.object as any)[relatedPropertyName];
           return value === relatedValue;
         },
-
         defaultMessage(args: ValidationArguments) {
           const [relatedPropertyName] = args.constraints;
-          return `${propertyName} must match ${relatedPropertyName} exactly`;
+          return `${propertyName} must be equal to ${relatedPropertyName}`;
         },
       },
     });

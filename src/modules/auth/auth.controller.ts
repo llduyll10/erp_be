@@ -1,4 +1,11 @@
-import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpCode,
+  HttpStatus,
+  Req,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dtos/login.dto';
@@ -13,6 +20,10 @@ import {
   UserResponseDto,
   CompanyResponseDto,
 } from './dtos/auth-response.dto';
+import { ForgotPasswordDto } from './dtos/forgot-password.dto';
+import { ResetPasswordDto } from './dtos/reset-password.dto';
+import { RequestWithUser } from '@/common/interfaces/request-with-user.interface';
+import { RefreshTokenDto } from './dtos/refresh-token.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -42,8 +53,8 @@ export class AuthController {
     const userProfile = await this.authService.getUserProfile(loginDto.email);
 
     const authResponse = new AuthResponseDto({
-      accessToken: result.accessToken,
-      refreshToken: result.refreshToken,
+      access_token: result.access_token,
+      refresh_token: result.refresh_token,
       user: userProfile as UserResponseDto,
     });
 
@@ -71,8 +82,8 @@ export class AuthController {
   async register(@Body() registerDto: RegisterDto) {
     const result = await this.authService.register(registerDto);
     const authResponse = new AuthResponseDto({
-      accessToken: result.accessToken,
-      refreshToken: result.refreshToken,
+      access_token: result.access_token,
+      refresh_token: result.refresh_token,
       user: (await this.authService.getUserProfile(
         registerDto.email,
       )) as UserResponseDto,
@@ -85,9 +96,9 @@ export class AuthController {
   }
 
   /**
-   * Refresh access token using refresh token
-   * @param refreshToken JWT refresh token
-   * @returns New JWT tokens
+   * Refresh access token
+   * @param refreshTokenDto Refresh token data
+   * @returns New access and refresh tokens
    */
   @Public()
   @Post('refresh')
@@ -95,17 +106,23 @@ export class AuthController {
   @ApiOperation({ summary: 'Refresh access token' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Token refresh successful',
-    type: TokenDto,
+    description: 'New access and refresh tokens',
+    type: AuthResponseDto,
   })
   @ApiResponse({
     status: HttpStatus.UNAUTHORIZED,
     description: 'Invalid refresh token',
   })
-  async refresh(@Body('refreshToken') refreshToken: string) {
-    const result = await this.authService.refreshToken(refreshToken);
+  async refreshToken(
+    @Body() refreshTokenDto: RefreshTokenDto,
+    @Req() req: Request,
+  ): Promise<any> {
+    const newTokens = await this.authService.refreshToken(
+      refreshTokenDto.refresh_token,
+    );
+
     return ResponseTransformer.transform(
-      result,
+      newTokens,
       'Token refreshed successfully',
     );
   }
@@ -135,9 +152,9 @@ export class AuthController {
     const userResponse = new UserResponseDto({
       ...result.user,
       email: result.user.email || '',
-      fullName: result.user.fullName || '',
+      full_name: result.user.full_name || '',
       role: result.user.role,
-      companyId: result.user.companyId || '',
+      company_id: result.user.company_id || '',
     });
 
     const companyResponse = new CompanyResponseDto({
@@ -147,11 +164,70 @@ export class AuthController {
 
     return ResponseTransformer.transform(
       new RegisterCompanyResponseDto({
-        accessToken: result.accessToken,
+        access_token: result.access_token,
         user: userResponse,
         company: companyResponse,
       }),
       'Company registered successfully',
     );
+  }
+
+  /**
+   * Request password reset
+   * @param forgotPasswordDto Email for reset
+   */
+  @Public()
+  @Post('forgot-password')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Request password reset email' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Password reset email sent if email exists',
+  })
+  async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
+    await this.authService.forgotPassword(forgotPasswordDto.email);
+    return ResponseTransformer.transform(
+      null,
+      'If your email exists in our system, you will receive a password reset link',
+    );
+  }
+
+  /**
+   * Reset password with token
+   * @param resetPasswordDto Password reset data
+   */
+  @Public()
+  @Post('reset-password')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Reset password with token' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Password has been reset',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Invalid token or passwords do not match',
+  })
+  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+    await this.authService.resetPassword(resetPasswordDto);
+    return ResponseTransformer.transform(
+      null,
+      'Password has been reset successfully',
+    );
+  }
+
+  /**
+   * Logout user and invalidate their refresh token
+   */
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Logout user' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'User logged out successfully',
+  })
+  async logout(@Req() req: RequestWithUser) {
+    await this.authService.logout(req.user.userId);
+    return ResponseTransformer.transform(null, 'Logged out successfully');
   }
 }

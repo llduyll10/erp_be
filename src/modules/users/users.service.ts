@@ -51,7 +51,7 @@ export class UsersService {
    * @throws ConflictException if email already exists
    */
   async create(registerDto: RegisterDto): Promise<User> {
-    const { email, password, fullName } = registerDto;
+    const { email, password, full_name } = registerDto;
 
     // Check if user already exists
     const existingUser = await this.findByEmail(email);
@@ -67,7 +67,7 @@ export class UsersService {
       const user = this.userRepository.create({
         email,
         password: hashedPassword,
-        fullName,
+        full_name,
         role: UserRole.ADMIN, // Default role
       });
 
@@ -121,7 +121,7 @@ export class UsersService {
   async updateLastLogin(id: string): Promise<void> {
     try {
       await this.userRepository.update(id, {
-        lastLoginAt: new Date(),
+        last_login_at: new Date(),
       });
     } catch (error) {
       this.logger.error(
@@ -143,7 +143,7 @@ export class UsersService {
       const hashedRefreshToken = await this.hashToken(refreshToken);
 
       await this.userRepository.update(id, {
-        refreshToken: hashedRefreshToken,
+        refresh_token: hashedRefreshToken,
       });
     } catch (error) {
       this.logger.error(
@@ -160,7 +160,7 @@ export class UsersService {
    * @returns Partial user object with safe data
    */
   mapToProfile(user: User): Partial<User> {
-    const { password, refreshToken, ...result } = user;
+    const { password, refresh_token, ...result } = user;
     return result;
   }
 

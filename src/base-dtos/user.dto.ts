@@ -13,7 +13,7 @@ export class UserDto extends BaseDTO {
 
   @Expose()
   @ApiProperty({ description: 'User full name' })
-  fullName: string;
+  full_name: string;
 
   @Expose()
   @ApiProperty({
@@ -25,7 +25,7 @@ export class UserDto extends BaseDTO {
 
   @Expose()
   @ApiProperty({ description: 'ID of the company the user belongs to' })
-  companyId: string;
+  company_id: string;
 
   @Expose()
   @ApiProperty({
@@ -33,5 +33,5 @@ export class UserDto extends BaseDTO {
     required: false,
     type: Date,
   })
-  lastLoginAt?: Date;
+  last_login_at?: Date;
 }

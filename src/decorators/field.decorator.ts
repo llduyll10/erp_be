@@ -30,8 +30,8 @@ import { isNumber } from 'lodash';
 import { i18nValidationMessage } from 'nestjs-i18n';
 import { ApiProperty, ApiPropertyOptions } from '@nestjs/swagger';
 import { IsFile, MaxFileSize } from 'nestjs-form-data';
-import { IsEqualTo } from 'src/shared/validators/is-equal-to.validator';
-import { HasMimeType } from 'src/shared/validators/has-mime-type.validator';
+import { IsEqualTo } from '@/shared/validators/is-equal-to.validator';
+import { HasMimeType } from '@/shared/validators/has-mime-type.validator';
 import { ToArray } from './transform.decorator';
 import {
   ToBoolean,
@@ -146,15 +146,11 @@ export function StringField(
   }
 
   if (options.url) {
-    decorators.push(
-      IsUrl(),
-    );
+    decorators.push(IsUrl());
   }
 
   if (options.email) {
-    decorators.push(
-      IsEmail(),
-    );
+    decorators.push(IsEmail());
   }
 
   if (options?.regex) {
@@ -179,7 +175,6 @@ export function StringField(
       }),
     );
   }
-
 
   if (options?.toLowerCase) {
     decorators.push(ToLowerCase());
@@ -386,7 +381,7 @@ export function FileField(options?: IFileFieldOptions): PropertyDecorator {
       fileTypes = [],
       maxCount = 0,
       minCount = 0,
-      each = false
+      each = false,
     } = options || {};
 
     const decorators = [
@@ -443,10 +438,7 @@ export function FileField(options?: IFileFieldOptions): PropertyDecorator {
 export function FileFieldOptional(
   options?: IFileFieldOptions,
 ): PropertyDecorator {
-  return applyDecorators(
-    IsOptional(),
-    FileField(options),
-  );
+  return applyDecorators(IsOptional(), FileField(options));
 }
 
 export function ObjectField(type?: Function): PropertyDecorator {

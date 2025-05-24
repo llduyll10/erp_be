@@ -8,15 +8,15 @@ import { BaseDTO } from './base.dto';
 export class StorageFileDto extends BaseDTO {
   @Expose()
   @ApiProperty({ description: 'Path to the file in storage' })
-  filePath: string;
+  file_path: string;
 
   @Expose()
   @ApiProperty({ description: 'Original filename' })
-  originName: string;
+  original_name: string;
 
   @Expose()
   @ApiProperty({ description: 'File MIME type' })
-  mimeType: string;
+  mime_type: string;
 
   @Expose()
   @ApiProperty({ description: 'File checksum for integrity verification' })
@@ -36,7 +36,7 @@ export class StorageFileDto extends BaseDTO {
     required: false,
     type: String,
   })
-  uploaderId?: string;
+  uploader_id?: string;
 
   @Expose()
   @ApiProperty({ description: 'Public URL to access the file' })

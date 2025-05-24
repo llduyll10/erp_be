@@ -8,7 +8,7 @@ export class UserProfileDto extends UserDto {
   id: string;
 
   @ApiProperty({ description: 'User full name' })
-  fullName: string;
+  full_name: string;
 
   @ApiProperty({ description: 'User email address' })
   email: string;
@@ -17,13 +17,13 @@ export class UserProfileDto extends UserDto {
   role: UserRole;
 
   @ApiProperty({ description: 'Company ID' })
-  companyId: string;
+  company_id: string;
 
   @ApiProperty({ description: 'Account creation date' })
-  createdAt: Date;
+  created_at: Date;
 
   @ApiProperty({ description: 'Last login date', required: false })
-  lastLoginAt?: Date;
+  last_login_at?: Date;
 
   constructor(partial: Partial<UserProfileDto>) {
     super();

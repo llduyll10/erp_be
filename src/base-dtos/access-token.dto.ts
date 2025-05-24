@@ -12,22 +12,22 @@ export class AccessTokenDto extends BaseDTO {
 
   @Expose()
   @ApiProperty({ description: 'JWT refresh token' })
-  refreshToken: string;
+  refresh_token: string;
 
   @Expose()
   @ApiProperty({ description: 'User ID associated with this token' })
-  userId: string;
+  user_id: string;
 
   @Expose()
   @ApiProperty({ description: 'Company ID associated with this token' })
-  companyId: string;
+  company_id: string;
 
   @Expose()
   @ApiProperty({
     description: 'Token expiration timestamp',
     type: Date,
   })
-  expiresAt: Date;
+  expires_at: Date;
 
   @Expose()
   @ApiProperty({
@@ -35,5 +35,5 @@ export class AccessTokenDto extends BaseDTO {
     type: Boolean,
     default: false,
   })
-  isRevoked: boolean;
+  is_revoked: boolean;
 }

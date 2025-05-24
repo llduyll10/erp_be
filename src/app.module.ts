@@ -14,6 +14,7 @@ import { ThrottlerGuard } from './common/guards/throttler.guard';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
+import { PoliciesGuard } from './common/guards/policy.guard';
 
 import appConfig from './config/app.config';
 import authConfig from './config/auth.config';
@@ -21,25 +22,28 @@ import databaseConfig from './config/database.config';
 import storageConfig from './config/storage.config';
 import emailConfig from './config/email.config';
 import { ShareModule } from '@/shared/share.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { UsersModule } from './modules/users/users.module';
+import { AdminModule } from './modules/admin/admin.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [appConfig, authConfig, databaseConfig, storageConfig, emailConfig],
+      envFilePath: ['.env.local', '.env'],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        host: configService.get('DB_HOST', 'localhost'),
-        port: configService.get<number>('DB_PORT', 5432),
-        username: configService.get('DB_USERNAME', 'postgres'),
-        password: configService.get('DB_PASSWORD', 'postgres'),
-        database: configService.get('DB_NAME', 'erp_development'),
+        host: configService.get('DB_HOST'),
+        port: +configService.get('DB_PORT'),
+        username: configService.get('DB_USERNAME'),
+        password: configService.get('DB_PASSWORD'),
+        database: configService.get('DB_DATABASE'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: configService.get<boolean>('DB_SYNC', false),
+        synchronize: configService.get('NODE_ENV') !== 'production',
       }),
     }),
     ThrottlerModule.forRootAsync({
@@ -76,6 +80,9 @@ import { ShareModule } from '@/shared/share.module';
       }),
       inject: [ConfigService],
     }),
+    AuthModule,
+    UsersModule,
+    AdminModule,
   ],
   providers: [
     {
@@ -101,6 +108,10 @@ import { ShareModule } from '@/shared/share.module';
     {
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptor,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: PoliciesGuard,
     },
   ],
 })

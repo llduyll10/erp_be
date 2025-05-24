@@ -20,7 +20,7 @@ export class CompanyResponseDto extends CompanyDto {
 export class RegisterCompanyResponseDto {
   @Expose()
   @ApiProperty({ description: 'JWT access token' })
-  accessToken: string;
+  access_token: string;
 
   @Expose()
   @ApiProperty({ description: 'User details' })
@@ -40,11 +40,11 @@ export class RegisterCompanyResponseDto {
 export class AuthResponseDto {
   @Expose()
   @ApiProperty({ description: 'Access token' })
-  accessToken: string;
+  access_token: string;
 
   @Expose()
   @ApiProperty({ description: 'Refresh token', required: false })
-  refreshToken?: string;
+  refresh_token?: string;
 
   @Expose()
   @ApiProperty({ description: 'User information', type: UserResponseDto })
