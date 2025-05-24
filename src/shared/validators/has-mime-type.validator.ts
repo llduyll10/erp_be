@@ -1,47 +1,41 @@
 import {
-  ValidateBy,
-  ValidationArguments,
+  registerDecorator,
   ValidationOptions,
+  ValidationArguments,
 } from 'class-validator';
-import { isFile } from 'nestjs-form-data';
 
-type FileSystemStoredFileCustom = {
-  originalName: string;
-  encoding: string;
-  busBoyMimeType: string;
-  path: string;
-  size: number;
-  fileType: {
-    ext: string;
-    mime: string;
-  };
-};
-
+/**
+ * Validates that a file has one of the specified MIME types
+ * @param allowedMimeTypes Array of allowed MIME types
+ * @param validationOptions Validation options
+ */
 export function HasMimeType(
-  allowedMimeTypes: string[] | string,
+  allowedMimeTypes: string[],
   validationOptions?: ValidationOptions,
-): PropertyDecorator {
-  return ValidateBy(
-    {
-      name: 'HasMimeType',
+) {
+  return function (object: any, propertyName: string) {
+    registerDecorator({
+      name: 'hasMimeType',
+      target: object.constructor,
+      propertyName: propertyName,
       constraints: [allowedMimeTypes],
+      options: validationOptions,
       validator: {
-        validate(value: FileSystemStoredFileCustom, args: ValidationArguments) {
-          const allowedMimeTypes: string[] = args.constraints[0];
-          if (isFile(value)) {
-            return allowedMimeTypes.some((mime) =>
-              value.busBoyMimeType.includes(mime),
-            );
+        validate(value: any, args: ValidationArguments) {
+          if (!value || !value.mimetype) {
+            return false;
           }
-          return false;
-        },
 
-        defaultMessage(validationArguments?: ValidationArguments): string {
-          const allowedTypes = validationArguments?.constraints?.join(', ') || 'allowed types';
-          return `File must be one of the following types: ${allowedTypes}`;
+          const [allowedTypes] = args.constraints;
+          return allowedTypes.includes(value.mimetype);
+        },
+        defaultMessage(args: ValidationArguments) {
+          const [allowedTypes] = args.constraints;
+          return `File must be one of the following types: ${allowedTypes.join(
+            ', ',
+          )}`;
         },
       },
-    },
-    validationOptions,
-  );
+    });
+  };
 }

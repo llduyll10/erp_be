@@ -13,20 +13,20 @@ export abstract class BaseEntity {
   id: string;
 
   @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
+  created_at: Date;
 
   @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date;
+  updated_at: Date;
 
   @VersionColumn()
   version: number;
 
   @Column({ name: 'is_deleted', default: false })
-  isDeleted: boolean;
+  is_deleted: boolean;
 
   @BeforeInsert()
   @BeforeUpdate()
   updateTimestamps() {
-    this.updatedAt = new Date();
+    this.updated_at = new Date();
   }
 } 

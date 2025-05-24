@@ -1,9 +1,10 @@
-import { Role } from '../../../constants/enums/role.enum';
+import { UserRole } from '@/entities/users.entity';
 
 export interface JwtPayload {
-  sub: string;
+  sub: string; // userId
   email: string;
-  roles: Role[];
-  iat?: number;
-  exp?: number;
-} 
+  role: UserRole;
+  company_id: string;
+  iat?: number; // issued at
+  exp?: number; // expiration time
+}

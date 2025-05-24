@@ -1,61 +1,130 @@
 import {
   Controller,
   Get,
-  Post,
   Put,
-  Delete,
   Body,
   Param,
-  Query,
   UseGuards,
+  NotFoundException,
+  Req,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
+import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
 import { UsersService } from './users.service';
-import { User } from './entities/user.entity';
-import { CreateUserDto } from './dtos/create-user.dto';
+import { UserProfileDto } from './dtos/user-profile.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
-import { CommonQueryDTO } from '../../base/dtos/common-query.dto';
-import { Roles } from '../../common/decorators/auth.decorators';
-import { Role } from '../../constants/enums/role.enum';
-import { ApiPaginatedResponse } from '../../common/decorators/swagger.decorators';
+import { RequestWithUser } from '@/common/interfaces/request.interface';
+import { ResponseTransformer } from '@/utils/transformers/response.transformer';
+import { ResponseDTO } from '@/base/dtos/response.dto';
+import { PoliciesGuard } from '@/common/guards/policy.guard';
+import { CheckPolicies } from '@/decorators/policy.decorator';
+import { Action } from '@/common/enums/action.enum';
+import { CurrentUser } from '@/decorators/current-user.decorator';
+import { User } from '@/entities/users.entity';
 
 @ApiTags('Users')
 @Controller('users')
+@ApiBearerAuth()
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  @Roles(Role.ADMIN)
-  @ApiOperation({ summary: 'Create user' })
-  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return await this.usersService.create(createUserDto);
-  }
-
-  @Get()
-  @Roles(Role.ADMIN)
-  @ApiPaginatedResponse(User)
-  async findAll(@Query() query: CommonQueryDTO) {
-    return await this.usersService.findAll(query);
-  }
-
+  /**
+   * Get user profile by ID
+   * @param id User ID
+   * @returns User profile data
+   */
   @Get(':id')
-  @Roles(Role.ADMIN)
-  async findOne(@Param('id') id: string): Promise<User> {
-    return await this.usersService.findOne(id);
-  }
-
-  @Put(':id')
-  @Roles(Role.ADMIN)
-  async update(
+  @UseGuards(JwtAuthGuard, PoliciesGuard)
+  @CheckPolicies((ability) => {
+    return ability.can(Action.Read, User);
+  })
+  @ApiOperation({ summary: 'Get user by ID' })
+  @ApiResponse({
+    status: 200,
+    type: ResponseDTO,
+    description: 'Return the user profile.',
+  })
+  @ApiResponse({ status: 404, description: 'User not found.' })
+  async findOne(
     @Param('id') id: string,
-    @Body() updateUserDto: UpdateUserDto,
-  ): Promise<User> {
-    return await this.usersService.update(id, updateUserDto);
+    @CurrentUser() currentUser: User,
+  ): Promise<ResponseDTO<UserProfileDto>> {
+    try {
+      const user = await this.usersService.findOne(id);
+      const profileData = this.usersService.mapToProfile(user);
+
+      return ResponseTransformer.transform(
+        new UserProfileDto(profileData),
+        'User profile retrieved successfully',
+      );
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new NotFoundException('User not found');
+    }
   }
 
-  @Delete(':id')
-  @Roles(Role.ADMIN)
-  async remove(@Param('id') id: string): Promise<void> {
-    await this.usersService.softDelete(id);
+  /**
+   * Get current user profile (based on JWT token)
+   * @returns Current user profile data
+   */
+  @Get('profile/me')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get current user profile' })
+  @ApiResponse({
+    status: 200,
+    type: ResponseDTO,
+    description: 'Return the current user profile.',
+  })
+  async getProfile(
+    @Req() req: RequestWithUser,
+  ): Promise<ResponseDTO<UserProfileDto>> {
+    try {
+      const userId = req.user.userId;
+      const user = await this.usersService.findOne(userId);
+      const profileData = this.usersService.mapToProfile(user);
+      return ResponseTransformer.transform(
+        new UserProfileDto(profileData),
+        'User profile retrieved successfully',
+      );
+    } catch (error) {
+      throw new NotFoundException('User not found');
+    }
   }
-} 
+
+  /**
+   * Update user profile
+   * @param req Request with user information
+   * @param updateUserDto Data to update
+   * @returns Updated user profile
+   */
+  @Put('profile')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Update user profile' })
+  @ApiResponse({
+    status: 200,
+    type: ResponseDTO,
+    description: 'Return the updated user profile.',
+  })
+  async updateProfile(
+    @Req() req: RequestWithUser,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<ResponseDTO<UserProfileDto>> {
+    const userId = req.user.userId;
+    const updatedUser = await this.usersService.updateUser(
+      userId,
+      updateUserDto,
+    );
+    const profileData = this.usersService.mapToProfile(updatedUser);
+    return ResponseTransformer.transform(
+      new UserProfileDto(profileData),
+      'User profile updated successfully',
+    );
+  }
+}

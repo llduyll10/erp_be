@@ -1,13 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Expose } from 'class-transformer';
 
 export class TokenDto {
-  @ApiProperty()
-  accessToken: string;
+  @Expose()
+  @ApiProperty({ description: 'JWT access token' })
+  access_token: string;
 
-  @ApiProperty()
-  refreshToken: string;
+  @Expose()
+  @ApiProperty({ description: 'JWT refresh token' })
+  refresh_token: string;
 
-  constructor(data: TokenDto) {
-    Object.assign(this, data);
+  constructor(partial: Partial<TokenDto>) {
+    Object.assign(this, partial);
   }
-} 
+}

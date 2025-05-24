@@ -1,16 +1,6 @@
 import { ClassConstructor, plainToClass } from 'class-transformer';
-import { ResponseDTO } from '../../base/dtos/response.dto';
-
-// Định nghĩa interfaces/types
-export interface User {
-  role: string;
-}
-
-export enum RoleEnum {
-  ADMIN = 'admin',
-  USER = 'user',
-  // thêm các roles khác nếu cần
-}
+import { User, UserRole } from '@/entities/users.entity';
+import { ResponseDTO } from '@/base/dtos/response.dto';
 
 export interface CommonQueryDTO {
   page: number;
@@ -46,10 +36,7 @@ export class ResponseTransformer {
     });
   }
 
-  static transformToDTO<T, V>(
-    data: T,
-    dto: ClassConstructor<V>,
-  ): V {
+  static transformToDTO<T, V>(data: T, dto: ClassConstructor<V>): V {
     return plainToClass(dto, data, {
       excludeExtraneousValues: true,
     });
@@ -67,7 +54,7 @@ export function serialize<T, O>(
     ...(currentUser
       ? { groups: [currentUser.role] }
       : {
-          groups: Object.values(RoleEnum),
+          groups: Object.values(UserRole),
         }),
   });
 }
@@ -98,4 +85,4 @@ export function renderList<T, O>(
       current_page: query.page,
     },
   };
-} 
+}
