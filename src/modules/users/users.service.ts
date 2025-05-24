@@ -8,7 +8,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { User, UserRole } from '@/entities/users.entity';
+import { User } from '@/entities/users.entity';
+import { UserRoleEnum } from '@/entities/enums/user.enum';
 import { RegisterDto } from '@/modules/auth/dtos/register.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 
@@ -68,7 +69,7 @@ export class UsersService {
         email,
         password: hashedPassword,
         full_name,
-        role: UserRole.ADMIN, // Default role
+        role: UserRoleEnum.ADMIN, // Default role
       });
 
       return await this.userRepository.save(user);

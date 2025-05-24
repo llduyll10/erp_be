@@ -1,5 +1,6 @@
 import { ClassConstructor, plainToClass } from 'class-transformer';
-import { User, UserRole } from '@/entities/users.entity';
+import { User } from '@/entities/users.entity';
+import { UserRoleEnum } from '@/entities/enums/user.enum';
 import { ResponseDTO } from '@/base/dtos/response.dto';
 
 export interface CommonQueryDTO {
@@ -54,7 +55,7 @@ export function serialize<T, O>(
     ...(currentUser
       ? { groups: [currentUser.role] }
       : {
-          groups: Object.values(UserRole),
+          groups: Object.values(UserRoleEnum),
         }),
   });
 }

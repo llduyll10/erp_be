@@ -16,7 +16,7 @@ This module handles user authentication, company registration, role-based access
   {
   "companyName": "Example Fashion Co",
   "admin": {
-  "fullName": "Alice Nguyen",
+  "full_name": "Alice Nguyen",
   "email": "[alice@example.com](mailto:alice@example.com)",
   "password": "secret123"
   }
@@ -75,9 +75,9 @@ This module handles user authentication, company registration, role-based access
 - JWT Payload includes:
 
   {
-  userId,
-  companyId,
-  role
+  "user_id",
+  "company_id",
+  "role"
   }
 
 - Middleware/guard protects all routes using JwtStrategy.

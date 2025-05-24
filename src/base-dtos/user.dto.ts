@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { BaseDTO } from '@/base/dtos/base.dto';
-import { UserRole } from '@/entities/users.entity';
+import { UserRoleEnum } from '@/entities/enums/user.enum';
 
 /**
  * Base DTO for User entity
@@ -18,10 +18,10 @@ export class UserDto extends BaseDTO {
   @Expose()
   @ApiProperty({
     description: 'User role',
-    enum: UserRole,
-    example: 'admin',
+    enum: UserRoleEnum,
+    example: UserRoleEnum.ADMIN,
   })
-  role: UserRole;
+  role: UserRoleEnum;
 
   @Expose()
   @ApiProperty({ description: 'ID of the company the user belongs to' })

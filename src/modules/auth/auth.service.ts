@@ -20,7 +20,8 @@ import { LoginDto } from './dtos/login.dto';
 import { RegisterDto } from './dtos/register.dto';
 import { TokenDto } from './dtos/token.dto';
 import { RegisterCompanyDto } from './dtos/register-company.dto';
-import { User, UserRole } from '@/entities/users.entity';
+import { User } from '@/entities/users.entity';
+import { UserRoleEnum } from '@/entities/enums/user.enum';
 import { Company } from '@/entities/companies.entity';
 import { UsersService } from '@/modules/users/users.service';
 import { MailService } from '@/shared/services/mail.service';
@@ -32,7 +33,7 @@ import { AccessToken } from '@/entities/access-token.entity';
 interface TokenPayload {
   user_id: string;
   company_id: string;
-  role: UserRole;
+  role: UserRoleEnum;
 }
 
 @Injectable()
@@ -275,7 +276,7 @@ export class AuthService {
         full_name: admin.full_name,
         email: admin.email,
         password: hashedPassword,
-        role: UserRole.ADMIN,
+        role: UserRoleEnum.ADMIN,
         company_id: savedCompany.id,
       });
       const savedUser = await queryRunner.manager.save(user);

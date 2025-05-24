@@ -11,7 +11,7 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
 import { RolesGuard } from '@/common/guards/roles.guard';
 import { Roles } from '@/common/decorators/roles.decorator';
-import { UserRole } from '@/entities/users.entity';
+import { UserRoleEnum } from '@/entities/enums/user.enum';
 import { ResponseTransformer } from '@/utils/transformers/response.transformer';
 
 @ApiTags('Admin')
@@ -22,7 +22,7 @@ export class AdminController {
    * Get admin dashboard data - only accessible by admins
    */
   @Get('dashboard')
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRoleEnum.ADMIN)
   @ApiOperation({ summary: 'Get admin dashboard data' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -43,7 +43,7 @@ export class AdminController {
    * Get sales data - accessible by admins and sales roles
    */
   @Get('sales')
-  @Roles(UserRole.ADMIN, UserRole.SALES)
+  @Roles(UserRoleEnum.ADMIN, UserRoleEnum.SALES)
   @ApiOperation({ summary: 'Get sales data' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -64,7 +64,7 @@ export class AdminController {
    * Get warehouse data - accessible by all roles
    */
   @Get('warehouse')
-  @Roles(UserRole.ADMIN, UserRole.SALES, UserRole.WAREHOUSE)
+  @Roles(UserRoleEnum.ADMIN, UserRoleEnum.SALES, UserRoleEnum.WAREHOUSE)
   @ApiOperation({ summary: 'Get warehouse data' })
   @ApiResponse({
     status: HttpStatus.OK,

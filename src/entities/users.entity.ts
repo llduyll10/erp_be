@@ -10,12 +10,7 @@ import {
 } from 'typeorm';
 import { Company } from './companies.entity';
 import { AccessToken } from './access-token.entity';
-
-export enum UserRole {
-  ADMIN = 'admin',
-  SALES = 'sales',
-  WAREHOUSE = 'warehouse',
-}
+import { UserRoleEnum } from './enums/user.enum';
 
 @Entity('users')
 export class User {
@@ -33,10 +28,10 @@ export class User {
 
   @Column({
     type: 'enum',
-    enum: UserRole,
-    default: UserRole.ADMIN,
+    enum: UserRoleEnum,
+    default: UserRoleEnum.ADMIN,
   })
-  role: UserRole;
+  role: UserRoleEnum;
 
   @Column({ nullable: true })
   refresh_token: string;

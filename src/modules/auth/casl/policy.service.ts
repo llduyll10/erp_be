@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User, UserRole } from '@/entities/users.entity';
+import { User } from '@/entities/users.entity';
 import { Company } from '@/entities/companies.entity';
 import {
   AbilityBuilder,
@@ -12,7 +12,7 @@ import {
   PureAbility,
 } from '@casl/ability';
 import { Action } from '@/common/enums/action.enum';
-
+import { UserRoleEnum } from '@/entities/enums/user.enum';
 // Define subject types as the classes themselves, not string literals
 export type Subjects = InferSubjects<typeof User | typeof Company> | 'all';
 
@@ -31,10 +31,10 @@ export class PolicyService {
       createMongoAbility,
     );
 
-    if (user.role === UserRole.ADMIN) {
+    if (user.role === UserRoleEnum.ADMIN) {
       // Admin can manage all resources within their company
       can(Action.Manage, 'all');
-    } else if (user.role === UserRole.SALES) {
+    } else if (user.role === UserRoleEnum.SALES) {
       // Sales can read all users from their company
       can(Action.Read, User);
 
